@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: album-database
+  labels:
+    app: album-database
+spec:
+  containers:
+  - name: mysql
+    image: mysql:8
+    ports:
+    - name: mysql-port
+      containerPort: 3306
+    env:
+      - name: MYSQL_ROOT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: album-secret
+            key: rootPassword
+      - name: MYSQL_USER
+        valueFrom:
+          secretKeyRef:
+            name: album-secret
+            key: username
+      - name: MYSQL_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: album-secret
+            key: password
+      - name: MYSQL_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: album-secret
+            key: database
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: album-db-service
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+    protocol: 'TCP'
+  selector:
+    app: album-database
+  type: LoadBalancer
