@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: album-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: second-app
+      tier: backend
+  template:
+    metadata: 
+      labels:
+        app: second-app
+        tier: backend
+    spec: 
+      containers:
+        - name: second-node
+          image: fire1017/album-image:v3
+          env:
+          - name: BACKEND_MYSQL_URL
+            value: "album-db-service.default"
+          - name: BACKEND_MYSQL_USERNAME
+            value: "yichou"
+          - name: BACKEND_MYSQL_PASSWORD
+            value: "password"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: album-backend-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
+    protocol: 'TCP'
+  selector:
+    app: second-app
+  type: NodePort

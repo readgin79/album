@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # storageClassName:  # 這裡的儲存型別註釋掉了
+  resources:
+    requests:
+      storage: 1Gi #1 GB
